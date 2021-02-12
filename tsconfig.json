@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "es6",
+    "moduleResolution": "node",
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "jsx": "react",
+    "rootDir": "src",
+    "outDir": "target",
+    "baseUrl": "src",
+    "plugins": [
+      {
+        "name": "ts-transform-paths",
+        "transform": "@zerollup/ts-transform-paths"
+      }
+    ],
+    "sourceMap": true,
+    "types": ["node", "jest"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/__scraps"]
+}

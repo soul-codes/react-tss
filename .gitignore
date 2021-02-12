@@ -1,0 +1,10 @@
+node_modules
+yarn-error.log
+/target
+/lib
+.private
+.temp
+.env
+.vscode
+__scraps
+.metals

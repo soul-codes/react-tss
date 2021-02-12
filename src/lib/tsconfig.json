@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "paths": {
+      "@utils": ["../utils"]
+    }
+  },
+  "references": [{ "path": "../utils" }],
+  "include": ["."]
+}
