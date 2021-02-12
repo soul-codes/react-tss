@@ -7,7 +7,7 @@ import { Configuration as DevServerConfig } from "webpack-dev-server";
 import { baseDir, publicDir } from "./baseDir";
 
 const PORT = 8080;
-const HOST = "localhost";
+const HOST = "0.0.0.0";
 
 export default asType<Configuration>({
   entry: [resolve(baseDir, "demo/main")],
