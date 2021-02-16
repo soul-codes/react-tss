@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "./bin/dev.sh",
     "ts": "ttsc -b -w src/demo/main",
-    "prepare": "ttsc -b src/lib && cpy target/lib lib",
+    "prepare": "ttsc -b src/lib/tsconfig.lib.json",
     "demo:build": "ttsc -b src/demo/main src/demo/webpack && . ./bin/build-demo.sh && cpy src/demo/webpack/public/index.html target/web/",
     "test": "jest",
     "release": "release-it",
