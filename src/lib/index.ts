@@ -3,7 +3,7 @@ import hashSum from "hash-sum";
 import jss, { StyleSheet, StyleSheetFactoryOptions } from "jss";
 import jssPresetDefault from "jss-preset-default";
 import LRU from "lru-cache";
-import { Context, useContext, useLayoutEffect } from "react";
+import { Context, useContext, useLayoutEffect, useRef } from "react";
 import { Disposer, reffx } from "reffx";
 
 const objectHash = (obj: any) => hashSum(obj);
@@ -120,7 +120,21 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
         return { addRef, classNames, sheet };
       })();
     hashes.set(hash, manager);
-    useLayoutEffect(() => manager.addRef(), [manager]);
+
+    const lastManager = useRef<readonly [Manager, Disposer] | null>(null);
+
+    // Styles are attached and old styles are detached before the DOM nodes are
+    // rendered, so this is pre-render side-effect rather than a post-render
+    // layout effect. We do this so that transition doesn't happen between a
+    // DOM element without the styles applied and with the styles applied.
+    // The layout effect is used to dispose the style the one time the component
+    // is unmounted.
+    lastManager.current =
+      !lastManager.current || lastManager.current[0] !== manager
+        ? (lastManager.current?.[1](), [manager, manager.addRef()])
+        : lastManager.current;
+    useLayoutEffect(() => lastManager.current?.[1](), []);
+
     return manager.classNames;
   };
 };
