@@ -1,11 +1,12 @@
 import { Properties as CSSProperties } from "csstype";
+import hashSum from "hash-sum";
 import jss, { StyleSheet, StyleSheetFactoryOptions } from "jss";
 import jssPresetDefault from "jss-preset-default";
 import LRU from "lru-cache";
 import { Context, useContext, useLayoutEffect } from "react";
 import { Disposer, reffx } from "reffx";
 
-const objectHash = require("object-hash").sha1;
+const objectHash = (obj: any) => hashSum(obj);
 let globalCounter = 0;
 
 jss.setup(jssPresetDefault());

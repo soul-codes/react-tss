@@ -20,6 +20,7 @@
     "src/lib/**"
   ],
   "dependencies": {
+    "hash-sum": "^2.0.0",
     "jss": "^10.5.1",
     "jss-preset-default": "^10.5.1",
     "lru-cache": "^6.0.0",
@@ -31,6 +32,7 @@
     "@soul-codes-dev/typetools": "^0.3.0",
     "@types/copy-webpack-plugin": "^6.0.0",
     "@types/express": "^4.17.8",
+    "@types/hash-sum": "^1.0.0",
     "@types/jest": "^24.0.25",
     "@types/lodash-es": "^4.17.3",
     "@types/lru-cache": "^5.1.0",
