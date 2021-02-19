@@ -1,3 +1,6 @@
+* fix: 🐛 attach styles before dom nodes (e15ce7c)
+* fix: 🐛 use faster object hash (ed29290)
+
 * chore: 🤖 correctly emit source map paths (7724b02)
 * chore: 🤖 fix dependency issues, delete unused files, etc (d166cab)
 
