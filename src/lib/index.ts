@@ -1,4 +1,4 @@
-import { Properties as CSSProperties } from "csstype";
+import { Properties as _CSSProperties } from "csstype";
 import hashSum from "hash-sum";
 import jss, { StyleSheet, StyleSheetFactoryOptions } from "jss";
 import jssPresetDefault from "jss-preset-default";
@@ -261,9 +261,7 @@ export interface JssStyle<P, T> extends JSSProperties<P, T> {
 }
 
 export type JSSProperties<P, T> = {
-  [K in keyof CSSProperties]?: Evaluable<
-    CSSProperties<string | number>[K] | NullLike,
-    P,
-    T
-  >;
+  [K in keyof CSSProperties]?: Evaluable<CSSProperties[K] | NullLike, P, T>;
 };
+
+export interface CSSProperties extends _CSSProperties<string | number> {}
