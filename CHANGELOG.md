@@ -1,3 +1,5 @@
+* fix: 🐛 expose CSSProperties type as used in the package (dfce14a)
+
 * fix: 🐛 attach styles before dom nodes (e15ce7c)
 * fix: 🐛 use faster object hash (ed29290)
 
