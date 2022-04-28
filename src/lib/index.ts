@@ -11,54 +11,56 @@ let globalCounter = 0;
 
 jss.setup(jssPresetDefault());
 
-export function createUseStyles<P = void>(): <T, K extends ClassHash<P, T>>(
-  styles: Evaluable<StyleDefs<T, P, K>, P, T>,
-  options?: CreateUseStylesOptions<T>
-) => (props: P) => { [key in keyof K]: string };
-export function createUseStyles<P = void, T = void>(): <
-  K extends ClassHash<P, T>
->(
-  styles: Evaluable<StyleDefs<T, P, K>, P, T>,
-  options?: CreateUseStylesOptions<T>
-) => (props: P) => { [key in keyof K]: string };
-export function createUseStyles<K extends ClassHash<void, void>>(
-  styles: StyleDefs<void, void, K>,
-  options?: CreateUseStylesOptions<void>
-): () => { [key in keyof K]: string };
+export interface CreateUseStylesFunction {
+  <P = void>(): <T, K extends ClassHash<P, T>>(
+    styles: Evaluable<StyleDefs<T, P, K>, P, T>,
+    options?: CreateUseStylesOptions<T>
+  ) => (props: P) => { [key in keyof K]: string };
+  <P = void, T = void>(): <K extends ClassHash<P, T>>(
+    styles: Evaluable<StyleDefs<T, P, K>, P, T>,
+    options?: CreateUseStylesOptions<T>
+  ) => (props: P) => { [key in keyof K]: string };
+  <K extends ClassHash<void, void>>(
+    styles: StyleDefs<void, void, K>,
+    options?: CreateUseStylesOptions<void>
+  ): () => { [key in keyof K]: string };
 
-export function createUseStyles(...args: any): any {
-  if (args[0]) {
-    return innerCreateUseStyles(args[0], args[1]);
-  }
-  return innerCreateUseStyles;
+  themed: <T>(
+    useThemeProvider: ThemeProvider<T>
+  ) => {
+    <P = void>(): <L extends ClassHash<P, T>>(
+      styles: Evaluable<StyleDefs<T, P, L>, P, T>,
+      options?: CreateUseStylesOptions<T>
+    ) => (props: P) => { [key in keyof L]: string };
+
+    <K extends ClassHash<void, T>>(
+      styles: Evaluable<StyleDefs<T, void, K>, void, T>,
+      options?: CreateUseStylesOptions<T>
+    ): (props: void) => { [key in keyof K]: string };
+  };
 }
 
-export type NullLike = null | undefined;
-
-createUseStyles.themed = <T>(useThemeProvider: ThemeProvider<T>) => {
-  function createUseStyles<P = void>(): <L extends ClassHash<P, T>>(
-    styles: Evaluable<StyleDefs<T, P, L>, P, T>,
-    options?: CreateUseStylesOptions<T>
-  ) => (props: P) => { [key in keyof L]: string };
-
-  function createUseStyles<K extends ClassHash<void, T>>(
-    styles: Evaluable<StyleDefs<T, void, K>, void, T>,
-    options?: CreateUseStylesOptions<T>
-  ): (props: void) => { [key in keyof K]: string };
-
-  function createUseStyles(...args: any): any {
+export const createUseStyles: CreateUseStylesFunction = Object.assign(
+  (...args: any): any => {
     if (args[0]) {
-      return innerCreateUseStyles(args[0], {
-        theme: useThemeProvider,
-        ...args[1],
-      });
+      return innerCreateUseStyles(args[0], args[1]);
     }
-    return (styles: any, options: any) =>
-      innerCreateUseStyles(styles, { theme: useThemeProvider, ...options });
+    return innerCreateUseStyles;
+  },
+  {
+    themed: <T>(useThemeProvider: ThemeProvider<T>) =>
+      function createUseStyles(...args: any): any {
+        if (args[0]) {
+          return innerCreateUseStyles(args[0], {
+            theme: useThemeProvider,
+            ...args[1],
+          });
+        }
+        return (styles: any, options: any) =>
+          innerCreateUseStyles(styles, { theme: useThemeProvider, ...options });
+      },
   }
-
-  return createUseStyles;
-};
+);
 
 const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
   styles: Evaluable<StyleDefs<T, P, K>, P, T>,
@@ -265,3 +267,5 @@ export type JSSProperties<P, T> = {
 };
 
 export interface CSSProperties extends _CSSProperties<string | number> {}
+
+export type NullLike = null | undefined;
