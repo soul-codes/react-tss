@@ -1,3 +1,5 @@
+* refactor: 💡 remove jss presets set-up side-effect (8fb5e27)
+
 * refactor: 💡 declare createUseStyles in one single statement (f26159c)
 
 * fix: 🐛 expose CSSProperties type as used in the package (dfce14a)
