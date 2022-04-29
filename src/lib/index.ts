@@ -9,7 +9,14 @@ import { Disposer, reffx } from "reffx";
 const objectHash = (obj: any) => hashSum(obj);
 let globalCounter = 0;
 
-jss.setup(jssPresetDefault());
+const ensureJssPresets = (() => {
+  let isInitialized = false;
+  return () => {
+    if (isInitialized) return;
+    isInitialized = true;
+    jss.setup(jssPresetDefault());
+  };
+})();
 
 export interface CreateUseStylesFunction {
   <P = void>(): <T, K extends ClassHash<P, T>>(
@@ -66,6 +73,7 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
   styles: Evaluable<StyleDefs<T, P, K>, P, T>,
   options?: CreateUseStylesOptions<T>
 ) => {
+  ensureJssPresets();
   const cacheSize = options?.variantCacheSize ?? 20;
   const hookCounter = globalCounter++;
 
