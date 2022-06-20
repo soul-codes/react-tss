@@ -2,7 +2,7 @@
   "name": "react-tss",
   "version": "0.1.6",
   "repository": {
-    "url": "https://gitlab.com/soul-codes/react-tss"
+    "url": "https://github.com/soul-codes/react-tss"
   },
   "scripts": {
     "dev": "./bin/dev.sh",
@@ -19,6 +19,7 @@
     "lib/**",
     "src/lib/**"
   ],
+  "license": "MIT",
   "dependencies": {
     "hash-sum": "^2.0.0",
     "jss": "^10.5.1",
