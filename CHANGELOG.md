@@ -1,3 +1,6 @@
+* chore: 🤖 es module friendly (969aa32)
+* chore: 🤖 move remote, add license (94abff6)
+
 * refactor: 💡 remove jss presets set-up side-effect (8fb5e27)
 
 * refactor: 💡 declare createUseStyles in one single statement (f26159c)
