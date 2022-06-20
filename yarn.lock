@@ -1193,6 +1193,11 @@
   dependencies:
     "@zerollup/ts-helpers" "^1.7.18"
 
+"@zoltu/typescript-transformer-append-js-extension@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@zoltu/typescript-transformer-append-js-extension/-/typescript-transformer-append-js-extension-1.0.1.tgz#c7edaccaef0fc87c0c85d6ce4f074e66a42d9080"
+  integrity sha512-7Lp30MtJO7YHZW19yJWhkuJrf+Y78COHopeZli7fiWrbIRvodsSXZIa7cFX/c4PFwFJt55N/7Pp/t6VH0fwBVQ==
+
 JSONStream@^1.0.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
@@ -7778,10 +7783,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-reffx@^0.9.2:
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/reffx/-/reffx-0.9.2.tgz#bf344e255be3ddc178987e6f714b576a53296043"
-  integrity sha512-I/L5nol09CJCTeP/DZURZ6VBeNMC2rKUNBoSuJY6oKXEsFeFyDsTuslM+U3rN72XcMC76ycB6XhrNHVDOe2OFw==
+reffx@1.0.0-rc.0:
+  version "1.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/reffx/-/reffx-1.0.0-rc.0.tgz#50306a992ae2837d7e2aee0b6cb8840bbfc4d064"
+  integrity sha512-ANj5BvJOaV9s2KhNH4b9H52sq+p4oOQcL/C5zZ/1IZ1ilaoiYFHcFGtMEzGd2Y7Hz6rAOYYU/GvG1G2Xnea24g==
 
 regenerator-runtime@^0.13.4:
   version "0.13.7"
