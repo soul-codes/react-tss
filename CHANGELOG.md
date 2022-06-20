@@ -1,3 +1,5 @@
+* fixup! fixup! fix: 🐛 native ES module friendly (2826b53)
+
 * fixup! fix: 🐛 native ES module friendly (57adb5b)
 
 * fix: 🐛 native ES module friendly (ec8c322)
