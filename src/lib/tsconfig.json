@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "composite": true,
     "paths": {
-      "@utils": ["../utils"]
+      "@utils": ["../utils/index"]
     }
   },
   "references": [{ "path": "../utils" }],

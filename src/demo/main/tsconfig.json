@@ -4,8 +4,8 @@
     "baseUrl": ".",
     "composite": true,
     "paths": {
-      "@lib": ["../../lib"],
-      "@utils": ["../../utils"]
+      "@lib": ["../../lib/index"],
+      "@utils": ["../../utils/index"]
     }
   },
   "references": [{ "path": "../../lib" }, { "path": "../../utils" }],
