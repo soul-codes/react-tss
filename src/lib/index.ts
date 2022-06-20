@@ -9,12 +9,17 @@ import { Disposer, reffx } from "reffx";
 const objectHash = (obj: any) => hashSum(obj);
 let globalCounter = 0;
 
+const defaultInterop = <T>(value: T): T => {
+  const maybeWrappedInDefault = (value as unknown) as T & { default?: T };
+  return maybeWrappedInDefault.default ?? value;
+};
+
 const ensureJssPresets = (() => {
   let isInitialized = false;
   return () => {
     if (isInitialized) return;
     isInitialized = true;
-    jss.setup(jssPresetDefault());
+    defaultInterop(jss).setup(defaultInterop(jssPresetDefault)());
   };
 })();
 

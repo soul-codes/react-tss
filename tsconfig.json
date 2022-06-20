@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "strict": true,
     "strictNullChecks": true,
-    "esModuleInterop": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
@@ -17,6 +16,10 @@
       {
         "name": "ts-transform-paths",
         "transform": "@zerollup/ts-transform-paths"
+      },
+      {
+        "transform": "@zoltu/typescript-transformer-append-js-extension/output/index.js",
+        "after": true
       }
     ],
     "sourceMap": true,
