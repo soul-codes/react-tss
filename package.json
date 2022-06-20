@@ -22,10 +22,9 @@
   "license": "MIT",
   "dependencies": {
     "hash-sum": "^2.0.0",
-    "jss": "^10.5.1",
-    "jss-preset-default": "^10.5.1",
+    "jss": "^10.9.0",
+    "jss-preset-default": "^10.9.0",
     "lru-cache": "^6.0.0",
-    "object-hash": "^2.1.1",
     "reffx": "1.0.0-rc.0"
   },
   "devDependencies": {

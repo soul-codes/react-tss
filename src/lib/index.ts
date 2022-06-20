@@ -14,7 +14,11 @@ const ensureJssPresets = (() => {
   return () => {
     if (isInitialized) return;
     isInitialized = true;
-    jss.setup(jssPresetDefault());
+    ((jss as unknown) as { default: typeof jss }).default.setup(
+      ((jssPresetDefault as unknown) as {
+        default: typeof jssPresetDefault;
+      }).default()
+    );
   };
 })();
 

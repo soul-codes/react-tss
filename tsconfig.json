@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "strict": true,
     "strictNullChecks": true,
-    "esModuleInterop": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
