@@ -1,3 +1,5 @@
+* fixup! fix: 🐛 native ES module friendly (57adb5b)
+
 * fix: 🐛 native ES module friendly (ec8c322)
 * chore: 🤖 move remote, add license (94abff6)
 
