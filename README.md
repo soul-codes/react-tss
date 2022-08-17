@@ -231,6 +231,28 @@ createUseStyles<PropType>()({
 })
 ```
 
+### Custom JSS initialization
+
+By default, `react-tss` will use [JSS's default presets](https://www.npmjs.com/package/jss-preset-default).
+If you need to customize JSS in other ways, you can create a customized version
+of `createUseStyles()` by calling `createUseStyles.withJssInstance`, passing
+a function that _initializes and returns_ the JSS instance that should be used.
+This initialization function will be called only once and only when the
+resulting `createUseStyles()` is called for the first time. Consult
+[JSS documentation](https://cssinjs.org/setup) on how to configure JSS instances.
+
+```ts
+import { createUseStyles as protoCreateUseStyles } from 'react-tss';
+import { create as createJss } from 'jss';
+
+// Use this instead of react-tss's createUseStyles()
+export const createUseStyles = protoCreateUseStyles(() =>
+  createJss().setup({
+    // ...
+  })
+)
+```
+
 ## Notes on stylesheet management
 
 `react-tss`'s stylesheet management is very simple: every styling _variant_

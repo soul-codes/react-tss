@@ -1,11 +1,14 @@
-import { createUseStyles } from "@lib";
+import { createUseStyles as c } from "@lib";
 import clsx from "clsx";
+import jss from "jss";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { render } from "react-dom";
 
 import { randomColor } from "./randomColor";
 
 const fontSizeTheme = createContext(20);
+
+const createUseStyles = c.withJssInstance(() => jss.setup());
 
 const useGlobalStyles = createUseStyles.themed(fontSizeTheme)({
   global: {

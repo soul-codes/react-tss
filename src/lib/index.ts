@@ -1,6 +1,6 @@
 import { Properties as _CSSProperties } from "csstype";
 import hashSum from "hash-sum";
-import jss, { StyleSheet, StyleSheetFactoryOptions } from "jss";
+import jss, { Jss, StyleSheet, StyleSheetFactoryOptions, create } from "jss";
 import jssPresetDefault from "jss-preset-default";
 import LRU from "lru-cache";
 import { Context, useContext, useLayoutEffect, useRef } from "react";
@@ -13,15 +13,6 @@ const defaultInterop = <T>(value: T): T => {
   const maybeWrappedInDefault = (value as unknown) as T & { default?: T };
   return maybeWrappedInDefault.default ?? value;
 };
-
-const ensureJssPresets = (() => {
-  let isInitialized = false;
-  return () => {
-    if (isInitialized) return;
-    isInitialized = true;
-    defaultInterop(jss).setup(defaultInterop(jssPresetDefault)());
-  };
-})();
 
 export interface CreateUseStylesFunction {
   <P = void>(): <T, K extends ClassHash<P, T>>(
@@ -50,35 +41,51 @@ export interface CreateUseStylesFunction {
       options?: CreateUseStylesOptions<T>
     ): (props: void) => { [key in keyof K]: string };
   };
+
+  withJssInstance(initJss: () => Jss): CreateUseStylesFunction;
 }
 
-export const createUseStyles: CreateUseStylesFunction = Object.assign(
-  (...args: any): any => {
-    if (args[0]) {
-      return innerCreateUseStyles(args[0], args[1]);
+const factory = (initJss: () => Jss): CreateUseStylesFunction => {
+  let jssResult: Jss | null = null;
+  const jssBoundInnerCreateUseStyles = innerCreateUseStyles(
+    () => (jssResult = jssResult || initJss())
+  );
+
+  return Object.assign(
+    (...args: any): any => {
+      if (args[0]) {
+        return jssBoundInnerCreateUseStyles(args[0], args[1]);
+      }
+      return jssBoundInnerCreateUseStyles;
+    },
+    {
+      themed: <T>(useThemeProvider: ThemeProvider<T>) =>
+        function createUseStyles(...args: any): any {
+          if (args[0]) {
+            return jssBoundInnerCreateUseStyles(args[0], {
+              theme: useThemeProvider,
+              ...args[1],
+            });
+          }
+          return (styles: any, options: any) =>
+            jssBoundInnerCreateUseStyles(styles, {
+              theme: useThemeProvider,
+              ...options,
+            });
+        },
+
+      withJssInstance: (initJss: () => Jss) => factory(initJss),
     }
-    return innerCreateUseStyles;
-  },
-  {
-    themed: <T>(useThemeProvider: ThemeProvider<T>) =>
-      function createUseStyles(...args: any): any {
-        if (args[0]) {
-          return innerCreateUseStyles(args[0], {
-            theme: useThemeProvider,
-            ...args[1],
-          });
-        }
-        return (styles: any, options: any) =>
-          innerCreateUseStyles(styles, { theme: useThemeProvider, ...options });
-      },
-  }
-);
+  );
+};
 
 const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
+  ensureJssInit: () => Jss
+) => (
   styles: Evaluable<StyleDefs<T, P, K>, P, T>,
   options?: CreateUseStylesOptions<T>
 ) => {
-  ensureJssPresets();
+  const jss = ensureJssInit();
   const cacheSize = options?.variantCacheSize ?? 20;
   const hookCounter = globalCounter++;
 
@@ -153,6 +160,10 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
     return manager.classNames;
   };
 };
+
+export const createUseStyles: CreateUseStylesFunction = factory(() =>
+  defaultInterop(jss).setup(defaultInterop(jssPresetDefault)())
+);
 
 function createStyleObject<P, T, K extends ClassHash<P, T>>(
   styles: Evaluable<StyleDefs<T, P, K>, P, T>,
