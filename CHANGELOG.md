@@ -1,3 +1,5 @@
+* feat: 🎸 experimental support for style tokens (e84d40f)
+
 * feat: 🎸 allow custom JSS initialization (0ad14a7)
 
 * chore: 🤖 es module friendly (969aa32)
