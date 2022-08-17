@@ -1,3 +1,5 @@
+* feat: 🎸 allow custom JSS initialization (0ad14a7)
+
 * chore: 🤖 es module friendly (969aa32)
 * chore: 🤖 move remote, add license (94abff6)
 
