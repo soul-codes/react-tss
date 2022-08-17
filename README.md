@@ -253,6 +253,68 @@ export const createUseStyles = protoCreateUseStyles(() =>
 )
 ```
 
+### Style tokens (experimental)
+
+Style tokens are wrappers of raw JSS styles that you can pass from a parent
+component to a child component. Style tokens can be passed as a prop to the
+style hook, where its property `style` can provide styles to be combined with
+the component's own styles. This allows you to control how parent-provided
+styles and child styles blend together in a more predictable/more granular manner
+than depending on CSS's precedence rules.
+
+#### Example
+
+```tsx
+import { StyleToken, getStyleTokens, createUseStyles } from 'react-tss';
+
+function Child(props: ChildProps){
+  const classes = useChildClasses(props);
+  return <div className={classes.container} />
+}
+
+interface ChildProps {
+  containerStyle?: StyleToken
+}
+
+const useChildClasses = createUseStyles<ChildProps>()({
+  classes: {
+    container: props => ({
+      ...props.containerStyle?.style,
+      display: "flex",
+      // ... more child styles
+    })
+  }
+})
+
+function Parent() {
+  const classes = useParentClasses();
+  return <Child containerStyle={getStyleTokens(classes).childContainer}/>
+}
+
+const useParentClasses = createUseStyles({
+  classes : {
+    childContainer: {
+      border: "1px solid red"
+    }
+  }
+});
+```
+
+#### Referential stability
+
+The practical difference between the style tokens and a simple dictionary of
+CSS properties is that style tokens are _referentially stable_ as long as the
+set of styles going into the `createUseStyles()` producing the tokens do not
+change.
+
+If you create a CSS property literal like `{ border: "1px solid black" }`
+within a component/component's `render()` function, the resulting object is a
+referentially different object each time (even if its value is the "same").
+When you pass a referentially different representation of the same value as a
+React prop, it forces that component to re-render even if nothing else changes,
+thanks to the heuristics of shallow prop equality enforced by React. These
+referentially stable style tokens will not cause such an issue.
+
 ## Notes on stylesheet management
 
 `react-tss`'s stylesheet management is very simple: every styling _variant_

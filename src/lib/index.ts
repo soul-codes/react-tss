@@ -1,6 +1,6 @@
 import { Properties as _CSSProperties } from "csstype";
 import hashSum from "hash-sum";
-import jss, { Jss, StyleSheet, StyleSheetFactoryOptions, create } from "jss";
+import jss, { Jss, StyleSheet, StyleSheetFactoryOptions } from "jss";
 import jssPresetDefault from "jss-preset-default";
 import LRU from "lru-cache";
 import { Context, useContext, useLayoutEffect, useRef } from "react";
@@ -18,15 +18,15 @@ export interface CreateUseStylesFunction {
   <P = void>(): <T, K extends ClassHash<P, T>>(
     styles: Evaluable<StyleDefs<T, P, K>, P, T>,
     options?: CreateUseStylesOptions<T>
-  ) => (props: P) => { [key in keyof K]: string };
+  ) => StyleHook<P, K>;
   <P = void, T = void>(): <K extends ClassHash<P, T>>(
     styles: Evaluable<StyleDefs<T, P, K>, P, T>,
     options?: CreateUseStylesOptions<T>
-  ) => (props: P) => { [key in keyof K]: string };
+  ) => StyleHook<P, K>;
   <K extends ClassHash<void, void>>(
     styles: StyleDefs<void, void, K>,
     options?: CreateUseStylesOptions<void>
-  ): () => { [key in keyof K]: string };
+  ): StyleHook<void, K>;
 
   themed: <T>(
     useThemeProvider: ThemeProvider<T>
@@ -34,15 +34,34 @@ export interface CreateUseStylesFunction {
     <P = void>(): <L extends ClassHash<P, T>>(
       styles: Evaluable<StyleDefs<T, P, L>, P, T>,
       options?: CreateUseStylesOptions<T>
-    ) => (props: P) => { [key in keyof L]: string };
+    ) => StyleHook<P, L>;
 
     <K extends ClassHash<void, T>>(
       styles: Evaluable<StyleDefs<T, void, K>, void, T>,
       options?: CreateUseStylesOptions<T>
-    ): (props: void) => { [key in keyof K]: string };
+    ): StyleHook<void, K>;
   };
 
   withJssInstance(initJss: () => Jss): CreateUseStylesFunction;
+}
+
+export type StyleHook<P, K> = (props: P) => StyleHookResult<K>;
+
+export const StyleTokens = Symbol("StyleTokens");
+
+export type StyleHookResult<K> = { [key in keyof K]: string } & {
+  [StyleTokens]: StyleTokenResult<K>;
+};
+
+export type StyleTokenResult<K> = {
+  [key in keyof K]: StyleToken;
+};
+
+export interface StyleToken {
+  $$styleToken: true;
+  style: CSSProperties;
+  className: string;
+  toString(): string;
 }
 
 const factory = (initJss: () => Jss): CreateUseStylesFunction => {
@@ -91,7 +110,7 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
 
   interface Manager {
     addRef: () => Disposer;
-    classNames: Record<keyof K, string>;
+    result: StyleHookResult<K>;
     sheet: StyleSheet;
   }
 
@@ -114,7 +133,7 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
       ? () => useContext(themeDef)
       : null;
 
-  return (props: P): { [key in keyof K]: string } => {
+  return (props: P): StyleHookResult<K> => {
     const theme = themeContextHook?.() as T;
     const styleObject = createStyleObject(styles, props, theme);
     const hash = objectHash(styleObject);
@@ -130,7 +149,17 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
           index: hookCounter,
           classNamePrefix: options?.prefix,
         });
-        const classNames = sheet.classes as Record<keyof K, string>;
+        const result = { ...sheet.classes } as StyleHookResult<K>;
+        const tokens = (result[StyleTokens] = {} as StyleTokenResult<K>);
+        for (const className in result) {
+          tokens[className as keyof K] = {
+            $$styleToken: true,
+            style: styleObject[className],
+            className,
+            toString: () => className,
+          };
+        }
+
         const addRef = reffx(() => {
           cache.del(hash);
           sheet.attach();
@@ -139,7 +168,7 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
             cache.set(hash, manager);
           };
         });
-        return { addRef, classNames, sheet };
+        return { addRef, result, sheet };
       })();
     hashes.set(hash, manager);
 
@@ -157,9 +186,20 @@ const innerCreateUseStyles = <P, K extends ClassHash<P, T>, T>(
         : lastManager.current;
     useLayoutEffect(() => lastManager.current?.[1](), []);
 
-    return manager.classNames;
+    return manager.result;
   };
 };
+
+/**
+ * Turns a dictionary of classes into a dictionary of style tokens.
+ * @param classes
+ * @returns
+ */
+export function getStyleTokens<K>(
+  classes: StyleHookResult<K>
+): StyleTokenResult<K> {
+  return classes[StyleTokens];
+}
 
 export const createUseStyles: CreateUseStylesFunction = factory(() =>
   defaultInterop(jss).setup(defaultInterop(jssPresetDefault)())
